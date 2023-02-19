@@ -7,19 +7,20 @@ import (
 )
 
 type orderCreatedResponse struct {
-	ID uuid.UUID `json:"id"`
+	Id uuid.UUID `json:"id"`
 }
 
 type orderResponse struct {
-	ID      uuid.UUID `json:"id"`
+	Id      uuid.UUID `json:"id"`
 	Version int       `json:"version"`
 }
 
 func CreateOrder(context *gin.Context) {
 	var response orderCreatedResponse
 
-	response.ID = uuid.New()
-
+	response.Id = uuid.New()
+	getOrderUri := GetHostSchema(context) + context.Request.Host + "/order/" + response.Id.String()
+	context.Writer.Header().Set("Location", getOrderUri)
 	context.JSON(http.StatusCreated, response)
 }
 
@@ -34,8 +35,16 @@ func GetOrder(context *gin.Context) {
 	}
 
 	var response orderResponse
-	response.ID = requestId
+	response.Id = requestId
 	response.Version = 1
 
 	context.JSON(http.StatusOK, response)
+}
+
+func GetHostSchema(context *gin.Context) string {
+	scheme := "http"
+	if context.Request.TLS != nil {
+		scheme = "https"
+	}
+	return scheme + "://"
 }
