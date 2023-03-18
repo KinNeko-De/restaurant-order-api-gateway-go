@@ -24,10 +24,10 @@ func CreateOrder(context *gin.Context) {
 	context.JSON(http.StatusCreated, response)
 }
 
-const GetOrderParamOrderId string = "orderId"
+const ParamOrderId string = "orderId"
 
 func GetOrder(context *gin.Context) {
-	paramId := context.Param(GetOrderParamOrderId)
+	paramId := context.Param(ParamOrderId)
 	requestId, err := uuid.Parse(paramId)
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
